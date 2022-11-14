@@ -1,6 +1,7 @@
 import multiprocessing
 import time
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from worker import worker
@@ -8,9 +9,11 @@ from worker import worker
 
 def load_posts(pages, driver, pool, q):
     while pages > 0:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        script = "window.scrollTo(0, document.body.scrollHeight);"
+        driver.execute_script(script)
         time.sleep(1)
-        new_set = driver.find_elements(By.CLASS_NAME, "_1oQyIsiPHYt6nx7VOmd1sz")
+        post_class = "_1oQyIsiPHYt6nx7VOmd1sz"
+        new_set = driver.find_elements(By.CLASS_NAME, post_class)
         for i in new_set:
             if pages <= 0:
                 break
@@ -18,7 +21,7 @@ def load_posts(pages, driver, pool, q):
                 link = i.find_element(
                     By.CLASS_NAME, "SQnoC3ObvgnGjWt90zD9Z"
                 ).get_attribute("href")
-            except:
+            except NoSuchElementException:
                 print("pass")
             else:
                 pages -= 1

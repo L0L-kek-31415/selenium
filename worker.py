@@ -1,5 +1,6 @@
 import time
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -18,7 +19,7 @@ def worker(link, q):
     time_my = driver.find_element(By.CLASS_NAME, "_2VF2J19pUIMSLJFky-7PEI")
     action.move_to_element(time_my).perform()
     time.sleep(1)
-    time_my = get_attr(driver, By.CLASS_NAME, 'u6HtAZu8_LKL721-EnKuR')
+    time_my = get_attr(driver, By.CLASS_NAME, "u6HtAZu8_LKL721-EnKuR")
 
     data = {
         "title": title,
@@ -37,5 +38,5 @@ def get_attr(link, by, value):
     try:
         result = link.find_element(by, value)
         return result.text
-    except:
+    except NoSuchElementException:
         return None
