@@ -4,51 +4,48 @@ from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from worker import worker
+from worker import Worker
 
 
-def load_posts(pages, driver, pool, q):
-    while pages > 0:
-        script = "window.scrollTo(0, document.body.scrollHeight);"
-        driver.execute_script(script)
-        time.sleep(1)
-        post_class = "_1oQyIsiPHYt6nx7VOmd1sz"
-        new_set = driver.find_elements(By.CLASS_NAME, post_class)
-        for i in new_set:
-            if pages <= 0:
-                break
-            try:
-                link = i.find_element(
-                    By.CLASS_NAME, "SQnoC3ObvgnGjWt90zD9Z"
-                ).get_attribute("href")
-            except NoSuchElementException:
-                print("pass")
-            else:
-                pages -= 1
-                pool.apply_async(
-                    worker,
-                    (
-                        link,
-                        q,
-                    ),
-                )
+class SiteService:
+    def __init__(self, pages, workers, link):
+        self.pages = pages
+        self.workers = workers
+        self.link = link
+        self.manager = multiprocessing.Manager()
+        self.queue = self.manager.Queue()
+        self.pool = multiprocessing.Pool(self.workers)
+        self.driver_location = "./chromedriver"
+        self.driver = webdriver.Chrome(executable_path=self.driver_location)
 
+    def start(self):
+        self.driver.get(self.link)
 
-def main(pages, workers):
-    driver_location = "./chromedriver"
-    driver = webdriver.Chrome(executable_path=driver_location)
-    driver.get("https://reddit.com/top")
-    m = multiprocessing.Manager()
-    q = m.Queue()
-    pool = multiprocessing.Pool(workers)
+        self.load_posts()
+        self.driver.close()
+        self.pool.close()
+        self.pool.join()
+        while self.queue.empty() is False:
+            print(self.queue.get())
 
-    load_posts(pages, driver, pool, q)
-    driver.close()
-    pool.close()
-    pool.join()
-    while q.empty() is False:
-        print(q.get())
-
-
-if __name__ == "__main__":
-    main(2, 2)
+    def load_posts(self):
+        counter = self.pages
+        while counter > 0:
+            script = "window.scrollTo(0, document.body.scrollHeight);"
+            self.driver.execute_script(script)
+            time.sleep(1)
+            post_class = "_1oQyIsiPHYt6nx7VOmd1sz"
+            new_posts = self.driver.find_elements(By.CLASS_NAME, post_class)
+            for post in new_posts:
+                if counter <= 0:
+                    break
+                try:
+                    link = post.find_element(
+                        By.CLASS_NAME, "SQnoC3ObvgnGjWt90zD9Z"
+                    ).get_attribute("href")
+                except NoSuchElementException:
+                    print("pass")
+                else:
+                    counter -= 1
+                    worker = Worker(link, self.queue)
+                    self.pool.apply_async(worker.start())
