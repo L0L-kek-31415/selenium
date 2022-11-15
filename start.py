@@ -1,5 +1,5 @@
 import argparse
-from main import SiteService
+from parser.siteservice import SiteService
 
 
 def main():
@@ -7,8 +7,9 @@ def main():
     parser.add_argument("--workers", type=int, default=2, help="workers")
     parser.add_argument("--pages", type=int, default=2, help="pages")
     args = parser.parse_args()
-    workers = args.__dict__["workers"]
-    pages = args.__dict__["pages"]
+    workers = args.workers
+    pages = args.pages
+    print(workers, pages)
     reddit = SiteService(pages, workers, "https://reddit.com/top")
     reddit.start()
 

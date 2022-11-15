@@ -4,6 +4,8 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 
+from parser.class_names import ClassNames
+
 
 class Worker:
     def __init__(self, link, queue):
@@ -20,12 +22,12 @@ class Worker:
         self.driver.close()
 
     def get_data(self):
-        title = self.get_attr(By.CLASS_NAME, "_eYtD2XCVieq6emjKBH3m")
-        subreddit = self.get_attr(By.CLASS_NAME, "_2VB8YvVdvxx0h0VGYVrpBX")
-        user = self.get_attr(By.CLASS_NAME, "_2tbHP6ZydRpjI44J3syuqC")
-        comments = self.get_attr(By.CLASS_NAME, "FHCV02u6Cp2zYL0fhQPsO")
-        upvoted = self.get_attr(By.CLASS_NAME, "t4Hq30BDzTeJ85vREX7_M")
-        vote = self.get_attr(By.CLASS_NAME, "_1rZYMD_4xY3gRcSS3p8ODO")
+        title = self.get_attr(By.CLASS_NAME, ClassNames.title)
+        subreddit = self.get_attr(By.CLASS_NAME, ClassNames.subreddit)
+        user = self.get_attr(By.CLASS_NAME, ClassNames.user)
+        comments = self.get_attr(By.CLASS_NAME, ClassNames.comments)
+        upvoted = self.get_attr(By.CLASS_NAME, ClassNames.upvoted)
+        vote = self.get_attr(By.CLASS_NAME, ClassNames.vote)
         time_my = self.get_time()
         data = {
             "title": title,
@@ -39,10 +41,10 @@ class Worker:
         return data
 
     def get_time(self):
-        time_my = self.get_attr(By.CLASS_NAME, "_2VF2J19pUIMSLJFky-7PEI", True)
+        time_my = self.get_attr(By.CLASS_NAME, ClassNames.time_object, True)
         self.action.move_to_element(time_my).perform()
         time.sleep(0.5)
-        time_my = self.get_attr(By.CLASS_NAME, "_2J_zB4R1FH2EjGMkQjedwc")
+        time_my = self.get_attr(By.CLASS_NAME, ClassNames.time_all)
         return time_my
 
     def get_attr(self, by, value, text=False):

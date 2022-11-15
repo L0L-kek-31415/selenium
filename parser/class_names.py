@@ -1,0 +1,11 @@
+class ClassNames:
+    post = "_1oQyIsiPHYt6nx7VOmd1sz"
+    link = "SQnoC3ObvgnGjWt90zD9Z"
+    title = "_eYtD2XCVieq6emjKBH3m"
+    subreddit = "_2VB8YvVdvxx0h0VGYVrpBX"
+    user = "_2tbHP6ZydRpjI44J3syuqC"
+    comments = "FHCV02u6Cp2zYL0fhQPsO"
+    upvoted = "t4Hq30BDzTeJ85vREX7_M"
+    vote = "_1rZYMD_4xY3gRcSS3p8ODO"
+    time_object = "_2VF2J19pUIMSLJFky-7PEI"
+    time_all = "_2J_zB4R1FH2EjGMkQjedwc"

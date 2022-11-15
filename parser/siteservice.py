@@ -4,7 +4,8 @@ from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from worker import Worker
+from parser.class_names import ClassNames
+from parser.worker import Worker
 
 
 class SiteService:
@@ -34,14 +35,14 @@ class SiteService:
             script = "window.scrollTo(0, document.body.scrollHeight);"
             self.driver.execute_script(script)
             time.sleep(1)
-            post_class = "_1oQyIsiPHYt6nx7VOmd1sz"
+            post_class = ClassNames.post
             new_posts = self.driver.find_elements(By.CLASS_NAME, post_class)
             for post in new_posts:
                 if counter <= 0:
                     break
                 try:
                     link = post.find_element(
-                        By.CLASS_NAME, "SQnoC3ObvgnGjWt90zD9Z"
+                        By.CLASS_NAME, ClassNames.link
                     ).get_attribute("href")
                 except NoSuchElementException:
                     print("pass")
