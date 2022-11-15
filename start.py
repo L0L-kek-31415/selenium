@@ -9,7 +9,6 @@ def main():
     args = parser.parse_args()
     workers = args.workers
     pages = args.pages
-    print(workers, pages)
     reddit = SiteService(pages, workers, "https://reddit.com/top")
     reddit.start()
 
