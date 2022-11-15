@@ -35,8 +35,10 @@ class SiteService:
             script = "window.scrollTo(0, document.body.scrollHeight);"
             self.driver.execute_script(script)
             time.sleep(1)
-            post_class = ClassNames.POST
-            new_posts = self.driver.find_elements(By.CLASS_NAME, post_class)
+            new_posts = self.driver.find_elements(
+                By.CLASS_NAME,
+                ClassNames.POST,
+            )
             for post in new_posts:
                 if counter <= 0:
                     break
