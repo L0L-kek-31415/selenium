@@ -35,14 +35,14 @@ class SiteService:
             script = "window.scrollTo(0, document.body.scrollHeight);"
             self.driver.execute_script(script)
             time.sleep(1)
-            post_class = ClassNames.post
+            post_class = ClassNames.POST
             new_posts = self.driver.find_elements(By.CLASS_NAME, post_class)
             for post in new_posts:
                 if counter <= 0:
                     break
                 try:
                     link = post.find_element(
-                        By.CLASS_NAME, ClassNames.link
+                        By.CLASS_NAME, ClassNames.LINK
                     ).get_attribute("href")
                 except NoSuchElementException:
                     print("pass")

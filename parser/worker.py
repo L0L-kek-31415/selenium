@@ -22,12 +22,12 @@ class Worker:
         self.driver.close()
 
     def get_data(self):
-        title = self.get_attr(By.CLASS_NAME, ClassNames.title)
-        subreddit = self.get_attr(By.CLASS_NAME, ClassNames.subreddit)
-        user = self.get_attr(By.CLASS_NAME, ClassNames.user)
-        comments = self.get_attr(By.CLASS_NAME, ClassNames.comments)
-        upvoted = self.get_attr(By.CLASS_NAME, ClassNames.upvoted)
-        vote = self.get_attr(By.CLASS_NAME, ClassNames.vote)
+        title = self.get_attr(By.CLASS_NAME, ClassNames.TITLE)
+        subreddit = self.get_attr(By.CLASS_NAME, ClassNames.SUBREDDIT)
+        user = self.get_attr(By.CLASS_NAME, ClassNames.USER)
+        comments = self.get_attr(By.CLASS_NAME, ClassNames.COMMENTS)
+        upvoted = self.get_attr(By.CLASS_NAME, ClassNames.UPVOTED)
+        vote = self.get_attr(By.CLASS_NAME, ClassNames.VOTE)
         time_my = self.get_time()
         data = {
             "title": title,
@@ -41,10 +41,10 @@ class Worker:
         return data
 
     def get_time(self):
-        time_my = self.get_attr(By.CLASS_NAME, ClassNames.time_object, True)
+        time_my = self.get_attr(By.CLASS_NAME, ClassNames.TIME_OBJECT, True)
         self.action.move_to_element(time_my).perform()
         time.sleep(0.5)
-        time_my = self.get_attr(By.CLASS_NAME, ClassNames.time_all)
+        time_my = self.get_attr(By.CLASS_NAME, ClassNames.TIME_ALL)
         return time_my
 
     def get_attr(self, by, value, text=False):
