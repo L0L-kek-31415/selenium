@@ -39,17 +39,18 @@ class Worker:
         return data
 
     def get_time(self):
-        time_my = self.get_attr(By.CLASS_NAME, "_2VF2J19pUIMSLJFky-7PEI")
+        time_my = self.get_attr(By.CLASS_NAME, "_2VF2J19pUIMSLJFky-7PEI", True)
         self.action.move_to_element(time_my).perform()
         time.sleep(0.5)
-        time_my = self.get_attr(By.CLASS_NAME, "u6HtAZu8_LKL721-EnKuR")
-        if time_my is None:
-            time_my = self.get_attr(By.CLASS_NAME, "_2J_zB4R1FH2EjGMkQjedwc")
+        time_my = self.get_attr(By.CLASS_NAME, "_2J_zB4R1FH2EjGMkQjedwc")
         return time_my
 
-    def get_attr(self, by, value):
+    def get_attr(self, by, value, text=False):
         try:
             result = self.driver.find_element(by, value)
-            return result.text
+            if text:
+                return result
+            else:
+                return result.text
         except NoSuchElementException:
             return None
