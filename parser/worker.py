@@ -14,7 +14,6 @@ class Worker(DriverService):
         self.action = ActionChains(self.driver)
 
     def start(self):
-        print("\nstart worker\n")
         self.driver.get(self.link)
         data = self.get_data()
         self.queue.put(data)
