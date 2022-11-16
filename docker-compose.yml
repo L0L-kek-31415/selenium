@@ -1,0 +1,14 @@
+version: '3.10'
+
+services:
+  browser:
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+    environment:
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_SESSIONS=10
+      - JAVA_OPTS=-XX:ActiveProcessorCount=10
+  web:
+    build: .
+
