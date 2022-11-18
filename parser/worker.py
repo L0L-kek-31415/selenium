@@ -12,6 +12,7 @@ class Worker(DriverService):
         self.link = link
         self.queue = queue
         self.action = ActionChains(self.driver)
+        self.start()
 
     def start(self):
         self.driver.get(self.link)
@@ -32,8 +33,8 @@ class Worker(DriverService):
             "user": user,
             "subreddit": subreddit,
             "vote": vote,
-            "comments": comments.split()[0],
-            "upvoted": upvoted.split()[0],
+            "comments": comments,
+            "upvoted": upvoted,
             "time": time_my,
         }
         return data

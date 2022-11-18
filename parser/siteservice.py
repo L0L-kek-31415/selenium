@@ -3,6 +3,8 @@ import time
 from selenium.webdriver.common.by import By
 
 from parser.class_names import ClassNames
+from parser.db.mongodb import MongoService
+from parser.db.postgres import PostgresService
 from parser.driver import DriverService
 from parser.worker import Worker
 
@@ -23,8 +25,17 @@ class SiteService(DriverService):
         self.close_driver()
         self.pool.close()
         self.pool.join()
-        while self.queue.empty() is False:
-            print(self.queue.get())
+        self.add_data_in_db()
+
+    def add_data_in_db(self):
+        with PostgresService() as postgres, MongoService() as mongo, open(
+            "db.txt", "a"
+        ) as db_file:
+            while self.queue.empty() is False:
+                post = self.queue.get()
+                postgres.add_post(post)
+                mongo.add_post(post)
+                db_file.write(str(post))
 
     def posts(self):
         while self.pages > 0:
@@ -44,8 +55,7 @@ class SiteService(DriverService):
             link = self.get_post_link(post)
             if link:
                 self.pages -= 1
-                worker = Worker(link, self.queue)
-                self.pool.apply_async(worker.start())
+                self.pool.apply_async(Worker, (link, self.queue))
 
     def get_post_link(self, post):
         link = self.get_attr(
