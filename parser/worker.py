@@ -37,7 +37,6 @@ class Worker(DriverService):
             "upvoted": self.get_num(upvoted),
             "time": time_my,
         }
-        print(data)
         return data
 
     def get_time(self):
