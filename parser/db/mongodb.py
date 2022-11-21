@@ -8,14 +8,12 @@ load_dotenv(".env.mongodb")
 
 
 class MongoService(BaseDBService):
-    def __init__(self):
+    def __enter__(self):
         self.name = "reddit_posts"
         self.url = (
             f"mongodb://{os.getenv('MONGO_INITDB_ROOT_PASSWORD')}:"
             f"{os.getenv('MONGO_INITDB_ROOT_USERNAME')}@mongodb:27017/"
         )
-
-    def __enter__(self):
         client = MongoClient(self.url)
         self.db_client = client[self.name]
         self.db = self.db_client["posts"]
