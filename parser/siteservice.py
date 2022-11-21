@@ -35,7 +35,10 @@ class SiteService(DriverService):
                 post = self.queue.get()
                 postgres.add_post(post)
                 mongo.add_post(post)
+                for i in postgres.return_all():
+                    print(i.title, i.comments, i.upvoted, i.vote)
                 db_file.write(str(post))
+                print(post)
 
     def posts(self):
         while self.pages > 0:

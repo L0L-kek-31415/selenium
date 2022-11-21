@@ -3,18 +3,16 @@ from pymongo import MongoClient
 import os
 
 
-load_dotenv("../../.env.mongodb")
+load_dotenv(".env.mongodb")
 
 
 class MongoService:
     def __init__(self):
         self.name = "reddit_posts"
         self.url = (
-            f"mongodb://{os.getenv('MONGO_INITDB_ROOT_PASSWORD', 'root')}:"
-            f"{os.getenv('MONGO_INITDB_ROOT_USERNAME', 'root')}@mongodb:27017/"
+            f"mongodb://{os.getenv('MONGO_INITDB_ROOT_PASSWORD')}:"
+            f"{os.getenv('MONGO_INITDB_ROOT_USERNAME')}@mongodb:27017/"
         )
-        self.db_client = None
-        self.db = None
 
     def __enter__(self):
         self.db_client = self.get_db()

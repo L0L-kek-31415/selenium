@@ -5,19 +5,16 @@ import os
 
 from parser.db.models_postgres import Post, Base
 
-load_dotenv("../../.env.postgres")
+load_dotenv(".env.postgres")
 
 
 class PostgresService:
     def __init__(self):
         self.conn_url = (
-            f'postgresql+psycopg2://{os.getenv("POSTGRES_USER", "postgres")}:'
-            f'{os.getenv("POSTGRES_PASSWORD", "postgres")}@postgres:5432/'
-            f'{os.getenv("POSTGRES_DB", "postgres")}'
+            f'postgresql+psycopg2://{os.getenv("POSTGRES_USER")}:'
+            f'{os.getenv("POSTGRES_PASSWORD")}@postgres:5432/'
+            f'{os.getenv("POSTGRES_DB")}'
         )
-        self.engine = None
-        self.session = None
-        self.db = None
 
     def __enter__(self):
         self.engine = self.start()
@@ -38,9 +35,9 @@ class PostgresService:
             title=post["title"],
             user=post["user"],
             subreddit=post["subreddit"],
-            comments=post["comments"],
-            upvoted=post["upvoted"],
-            vote=post["vote"],
+            comments=int(post["comments"]),
+            upvoted=int(post["upvoted"]),
+            vote=int(post["vote"]),
             time=post["time"],
         )
         self.db.add(new_post)

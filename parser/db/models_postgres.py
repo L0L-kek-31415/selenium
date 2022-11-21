@@ -5,12 +5,12 @@ Base = declarative_base()
 
 
 class Post(Base):
-    __tablename__ = "Posts"
+    __tablename__ = "reddit_posts"
     id = Column(Integer(), primary_key=True)
     title = Column(String())
     user = Column(String())
     subreddit = Column(String())
-    comments = Column(String)
-    upvoted = Column(String())
-    vote = Column(String())
+    comments = Column(Integer())
+    upvoted = Column(Integer())
+    vote = Column(Integer())
     time = Column(String())
