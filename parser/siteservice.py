@@ -5,16 +5,18 @@ from selenium.webdriver.common.by import By
 from parser.class_names import ClassNames
 from parser.db.mongodb import MongoService
 from parser.db.postgres import PostgresService
+from parser.db.txt_db import TxtDB
 from parser.driver import DriverService
 from parser.worker import Worker
 
 
 class SiteService(DriverService):
-    def __init__(self, pages, workers, link):
+    def __init__(self, pages, workers, link, database):
         super().__init__()
         self.pages = pages
         self.workers = workers
         self.link = link
+        self.database = database
         self.manager = multiprocessing.Manager()
         self.queue = self.manager.Queue()
         self.pool = multiprocessing.Pool(self.workers)
@@ -28,14 +30,20 @@ class SiteService(DriverService):
         self.add_data_in_db()
 
     def add_data_in_db(self):
-        with PostgresService() as postgres, MongoService() as mongo, open(
-            "db.txt", "a"
-        ) as db_file:
+        databases = {
+            "mongo": MongoService,
+            "pg": PostgresService,
+            "txt": TxtDB,
+        }
+        try:
+            database = databases[self.database]
+        except KeyError:
+            database = databases["txt"]
+        with database() as db:
             while self.queue.empty() is False:
                 post = self.queue.get()
-                postgres.add_post(post)
-                mongo.add_post(post)
-                db_file.write(str(post))
+                db.add_post(post)
+            print(db.return_all())
 
     def posts(self):
         while self.pages > 0:

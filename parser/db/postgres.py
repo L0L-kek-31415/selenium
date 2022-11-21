@@ -1,47 +1,65 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import psycopg2
 from dotenv import load_dotenv
 import os
 
 from parser.db.base_db_class import BaseDBService
-from parser.db.models_postgres import Post, Base
 
 load_dotenv(".env.postgres")
 
 
 class PostgresService(BaseDBService):
-    def __init__(self):
-        self.conn_url = (
-            f'postgresql+psycopg2://{os.getenv("POSTGRES_USER")}:'
-            f'{os.getenv("POSTGRES_PASSWORD")}@postgres:5432/'
-            f'{os.getenv("POSTGRES_DB")}'
+    def __enter__(self):
+        db = os.getenv("POSTGRES_DB")
+        user = os.getenv("POSTGRES_USER")
+        password = os.getenv("POSTGRES_DB")
+        self.conn = psycopg2.connect(
+            database=db,
+            user=user,
+            password=password,
+            host="postgres",
+            port="5432",
+        )
+        self.cur = self.conn.cursor()
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS reddit ("
+            "id serial primary key,"
+            " title varchar,"
+            " owner varchar,"
+            " subreddit varchar,"
+            " comments integer,"
+            " upvoted integer,"
+            " vote integer,"
+            " time_my varchar);"
         )
 
-    def __enter__(self):
-        self.engine = self.start()
-        self.session = sessionmaker(bind=self.engine)
-        self.db = self.session()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.db.close()
-
-    def start(self):
-        engine = create_engine(self.conn_url)
-        Base.metadata.create_all(engine)
-        return engine
+        self.conn.commit()
+        self.conn.close()
+        self.cur.close()
 
     def add_post(self, post):
-        new_post = Post(
-            title=post["title"],
-            user=post["user"],
-            subreddit=post["subreddit"],
-            comments=int(post["comments"]),
-            upvoted=int(post["upvoted"]),
-            vote=int(post["vote"]),
-            time=post["time"],
+        self.cur.execute(
+            "INSERT INTO reddit (title, owner, subreddit,"
+            " comments, upvoted, vote, time_my) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s);",
+            (
+                post["title"],
+                post["user"],
+                post["subreddit"],
+                int(post["comments"]),
+                int(post["upvoted"]),
+                int(post["vote"]),
+                post["time"],
+            ),
         )
-        self.db.add(new_post)
+        self.conn.commit()
 
     def return_all(self):
-        return self.db.query(Post).all()
+        result = []
+        self.cur.execute("select * from reddit")
+        rows = self.cur.fetchall()
+        for i in rows:
+            result.append(i)
+        return result

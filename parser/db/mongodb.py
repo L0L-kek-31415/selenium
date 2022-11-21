@@ -16,19 +16,19 @@ class MongoService(BaseDBService):
         )
 
     def __enter__(self):
-        self.db_client = self.start()
+        client = MongoClient(self.url)
+        self.db_client = client[self.name]
         self.db = self.db_client["posts"]
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.db_client.client.close()
 
-    def start(self):
-        client = MongoClient(self.url)
-        return client[self.name]
-
     def add_post(self, post):
         self.db.insert_one(post)
 
     def return_all(self):
-        return self.db.find()
+        result = []
+        for item in self.db.find():
+            result.append(item)
+        return result

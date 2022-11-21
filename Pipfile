@@ -9,7 +9,7 @@ pre-commit = "*"
 pymongo = "*"
 psycopg2 = "*"
 python-dotenv = "*"
-sqlalchemy = {extras = ["mypy"], version = "*"}
+types-psycopg2 = "*"
 
 [dev-packages]
 black = "*"
