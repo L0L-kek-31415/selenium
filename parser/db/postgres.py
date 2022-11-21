@@ -3,12 +3,13 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
 
+from parser.db.base_db_class import BaseDBService
 from parser.db.models_postgres import Post, Base
 
 load_dotenv(".env.postgres")
 
 
-class PostgresService:
+class PostgresService(BaseDBService):
     def __init__(self):
         self.conn_url = (
             f'postgresql+psycopg2://{os.getenv("POSTGRES_USER")}:'

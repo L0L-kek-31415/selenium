@@ -2,11 +2,12 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
 
+from parser.db.base_db_class import BaseDBService
 
 load_dotenv(".env.mongodb")
 
 
-class MongoService:
+class MongoService(BaseDBService):
     def __init__(self):
         self.name = "reddit_posts"
         self.url = (
@@ -15,14 +16,14 @@ class MongoService:
         )
 
     def __enter__(self):
-        self.db_client = self.get_db()
+        self.db_client = self.start()
         self.db = self.db_client["posts"]
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.db_client.client.close()
 
-    def get_db(self):
+    def start(self):
         client = MongoClient(self.url)
         return client[self.name]
 
