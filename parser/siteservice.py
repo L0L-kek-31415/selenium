@@ -17,8 +17,7 @@ class SiteService(DriverService):
         self.workers = workers
         self.link = link
         self.database = database
-        self.manager = multiprocessing.Manager()
-        self.queue = self.manager.Queue()
+        self.queue = multiprocessing.Manager().Queue()
         self.pool = multiprocessing.Pool(self.workers)
 
     def start(self):
