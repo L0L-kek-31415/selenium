@@ -1,4 +1,4 @@
-from parser.db.base_db_class import BaseDBService
+from db.base_db_class import BaseDBService
 
 
 class TxtDB(BaseDBService):

@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
 
-from parser.db.base_db_class import BaseDBService
+from db.base_db_class import BaseDBService
 
 load_dotenv(".env.mongodb")
 

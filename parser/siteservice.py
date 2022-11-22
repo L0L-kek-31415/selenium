@@ -3,9 +3,9 @@ import time
 from selenium.webdriver.common.by import By
 
 from parser.class_names import ClassNames
-from parser.db.mongodb import MongoService
-from parser.db.postgres import PostgresService
-from parser.db.txt_db import TxtDB
+from db.mongodb import MongoService
+from db.postgres import PostgresService
+from db.txt_db import TxtDB
 from parser.driver import DriverService
 from parser.worker import Worker
 
@@ -37,7 +37,7 @@ class SiteService(DriverService):
         try:
             database = databases[self.database]
         except KeyError:
-            database = databases["txt"]
+            database = databases["mongo"]
         with database() as db:
             while self.queue.empty() is False:
                 post = self.queue.get()
