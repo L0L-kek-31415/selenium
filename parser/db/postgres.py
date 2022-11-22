@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import psycopg2
 from dotenv import load_dotenv
 import os
@@ -21,7 +23,7 @@ class PostgresService(BaseDBService):
         )
         self.cur = self.conn.cursor()
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS reddit ("
+            "CREATE TABLE IF NOT EXISTS reddit_ ("
             "id serial primary key,"
             " title varchar,"
             " owner varchar,"
@@ -29,7 +31,7 @@ class PostgresService(BaseDBService):
             " comments integer,"
             " upvoted integer,"
             " vote integer,"
-            " time_my varchar);"
+            " time_my timestamp);"
         )
 
         return self
@@ -41,7 +43,7 @@ class PostgresService(BaseDBService):
 
     def add_post(self, post):
         self.cur.execute(
-            "INSERT INTO reddit (title, owner, subreddit,"
+            "INSERT INTO reddit_ (title, owner, subreddit,"
             " comments, upvoted, vote, time_my) "
             "VALUES (%s, %s, %s, %s, %s, %s, %s);",
             (
@@ -51,14 +53,22 @@ class PostgresService(BaseDBService):
                 int(post["comments"]),
                 int(post["upvoted"]),
                 int(post["vote"]),
-                post["time"],
+                self.get_datetime(post["time"]),
             ),
         )
         self.conn.commit()
 
+    @staticmethod
+    def get_datetime(time_my):
+        if time_my is not None:
+            data = " ".join(time_my.split()[:6])
+            data = datetime.strptime(data, "%a, %b %d, %Y, %I:%M:%S %p")
+            return data
+        return None
+
     def return_all(self):
         result = []
-        self.cur.execute("select * from reddit")
+        self.cur.execute("select * from reddit_")
         rows = self.cur.fetchall()
         for i in rows:
             result.append(i)
