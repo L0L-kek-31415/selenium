@@ -6,6 +6,11 @@ name = "pypi"
 [packages]
 selenium = "*"
 pre-commit = "*"
+pymongo = "*"
+psycopg2 = "*"
+python-dotenv = "*"
+types-psycopg2 = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 black = "*"

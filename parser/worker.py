@@ -12,6 +12,7 @@ class Worker(DriverService):
         self.link = link
         self.queue = queue
         self.action = ActionChains(self.driver)
+        self.start()
 
     def start(self):
         self.driver.get(self.link)
@@ -31,9 +32,9 @@ class Worker(DriverService):
             "title": title,
             "user": user,
             "subreddit": subreddit,
-            "vote": vote,
-            "comments": comments.split()[0],
-            "upvoted": upvoted.split()[0],
+            "vote": self.get_num(vote),
+            "comments": self.get_num(comments),
+            "upvoted": self.get_num(upvoted),
             "time": time_my,
         }
         return data
@@ -44,3 +45,16 @@ class Worker(DriverService):
         time.sleep(0.5)
         time_my = self.get_attr(By.CLASS_NAME, ClassNames.TIME_ALL)
         return time_my
+
+    @staticmethod
+    def get_num(data):
+        if data is not None:
+            return Worker.replace_k(data.split()[0].replace("%", ""))
+        else:
+            return 0
+
+    @staticmethod
+    def replace_k(data):
+        if data.find("k") != -1:
+            data = int(float(data.replace("k", "")) * 1000)
+        return data

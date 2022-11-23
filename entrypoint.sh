@@ -8,6 +8,6 @@ done
 
 echo "Browser started"
 
-python3 start.py --workers 2 --pages 2
+python3 start.py --workers 2 --pages 2 --database mongo
 
 exec "$@"

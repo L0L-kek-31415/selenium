@@ -11,4 +11,15 @@ services:
       - JAVA_OPTS=-XX:ActiveProcessorCount=10
   web:
     build: .
-
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    env_file:
+      - .env.mongodb
+  postgres:
+    image: postgres:13
+    env_file:
+      - ./.env.postgres
+    ports:
+      - 5433:5432

@@ -2,3 +2,5 @@
 /ebala.py
 /.idea/
 /.mypy_cache/
+/.env.postgres
+/.env.mongodb
