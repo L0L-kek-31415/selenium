@@ -10,7 +10,7 @@ services:
       - SE_NODE_MAX_SESSIONS=10
       - JAVA_OPTS=-XX:ActiveProcessorCount=10
   web:
-    build: .
+    build: parser_app
     volumes:
       - ../data:/data:rw
   mongodb:
@@ -18,11 +18,11 @@ services:
     ports:
       - 27017:27017
     env_file:
-      - .env.mongodb
+      - parser_app/.env.mongodb
   postgres:
     image: postgres:13
     env_file:
-      - ./.env.postgres
+      - parser_app/.env.postgres
     ports:
       - 5433:5432
   fastapi:
