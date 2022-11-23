@@ -1,25 +1,24 @@
 import time
-from selenium import webdriver
-from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 
 from parser.class_names import ClassNames
+from parser.driver import DriverService
 
 
-class Worker:
+class Worker(DriverService):
     def __init__(self, link, queue):
+        super().__init__()
         self.link = link
         self.queue = queue
-        self.driver_location = "./chromedriver"
-        self.driver = webdriver.Chrome(executable_path=self.driver_location)
         self.action = ActionChains(self.driver)
+        self.start()
 
     def start(self):
         self.driver.get(self.link)
         data = self.get_data()
         self.queue.put(data)
-        self.driver.close()
+        self.close_driver()
 
     def get_data(self):
         title = self.get_attr(By.CLASS_NAME, ClassNames.TITLE)
@@ -33,9 +32,9 @@ class Worker:
             "title": title,
             "user": user,
             "subreddit": subreddit,
-            "vote": vote,
-            "comments": comments.split()[0],
-            "upvoted": upvoted.split()[0],
+            "vote": self.get_num(vote),
+            "comments": self.get_num(comments),
+            "upvoted": self.get_num(upvoted),
             "time": time_my,
         }
         return data
@@ -47,12 +46,15 @@ class Worker:
         time_my = self.get_attr(By.CLASS_NAME, ClassNames.TIME_ALL)
         return time_my
 
-    def get_attr(self, by, value, text=False):
-        try:
-            result = self.driver.find_element(by, value)
-            if text:
-                return result
-            else:
-                return result.text
-        except NoSuchElementException:
-            return None
+    @staticmethod
+    def get_num(data):
+        if data is not None:
+            return Worker.replace_k(data.split()[0].replace("%", ""))
+        else:
+            return 0
+
+    @staticmethod
+    def replace_k(data):
+        if data.find("k") != -1:
+            data = int(float(data.replace("k", "")) * 1000)
+        return data
