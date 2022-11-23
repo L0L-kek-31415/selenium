@@ -29,7 +29,6 @@ class SiteService(DriverService):
         self.add_data_in_db()
 
     def add_data_in_db(self):
-        self.database = "txt"
         databases = {
             "mongo": MongoService,
             "pg": PostgresService,

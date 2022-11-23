@@ -26,7 +26,7 @@ services:
     ports:
       - 5433:5432
   fastapi:
-    build: ../fastapi_app
+    build: ./fastapi_app
     entrypoint: uvicorn main:app --reload --port 1111 --host 0.0.0.0
     ports:
       - 1111:1111
