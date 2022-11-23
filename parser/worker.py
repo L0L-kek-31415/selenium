@@ -32,10 +32,10 @@ class Worker(DriverService):
             "title": title,
             "user": user,
             "subreddit": subreddit,
-            "vote": self.get_num(vote),
-            "comments": self.get_num(comments),
-            "upvoted": self.get_num(upvoted),
-            "time": time_my,
+            "vote": str(self.get_num(vote)),
+            "comments": str(self.get_num(comments)),
+            "upvoted": str(self.get_num(upvoted)),
+            "time": str(time_my),
         }
         return data
 

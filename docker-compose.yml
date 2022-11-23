@@ -11,6 +11,8 @@ services:
       - JAVA_OPTS=-XX:ActiveProcessorCount=10
   web:
     build: .
+    volumes:
+      - ../data:/data:rw
   mongodb:
     image: mongo
     ports:
@@ -23,3 +25,12 @@ services:
       - ./.env.postgres
     ports:
       - 5433:5432
+  fastapi:
+    build: ../fastapi_app
+    entrypoint: uvicorn main:app --reload --port 1111 --host 0.0.0.0
+    ports:
+      - 1111:1111
+    volumes:
+      - ../data:/data:rw
+
+
