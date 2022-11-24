@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 
 from parser.class_names import ClassNames
 from parser.driver import DriverService
-from parser.link_parser.producer import Producer
+from parser.rabbit.producer import BaseProducer
 
 
 class SiteService(DriverService):
@@ -12,7 +12,7 @@ class SiteService(DriverService):
         self.pages = pages
         self.link = link
         self.database = database
-        self.producer = Producer()
+        self.producer = BaseProducer("link")
 
     def start(self):
         self.driver.get(self.link)

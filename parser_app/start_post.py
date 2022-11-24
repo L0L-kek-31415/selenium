@@ -2,7 +2,7 @@ from parser.post_parser.consumer import Consumer
 
 
 def main():
-    Consumer()
+    Consumer(5)
 
 
 if __name__ == "__main__":

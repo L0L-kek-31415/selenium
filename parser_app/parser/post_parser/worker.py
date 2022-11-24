@@ -4,7 +4,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from parser.class_names import ClassNames
 from parser.driver import DriverService
-from parser.post_parser.producer import Producer
+from parser.rabbit.producer import BaseProducer
 
 
 class Worker(DriverService):
@@ -12,7 +12,7 @@ class Worker(DriverService):
         super().__init__()
         self.link = link
         self.action = ActionChains(self.driver)
-        self.producer = Producer()
+        self.producer = BaseProducer("syka")
         self.start()
 
     def start(self):
