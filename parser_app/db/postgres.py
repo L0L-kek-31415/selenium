@@ -19,7 +19,7 @@ class PostgresService(BaseDBService):
             f'{os.getenv("POSTGRES_SERVER")}:{os.getenv("POSTGRES_PORT")}/'
             f'{os.getenv("POSTGRES_DB")}'
         )
-        engine = create_engine(self.conn_url)
+        engine = create_engine(self.conn_url, pool_pre_ping=True)
         Base.metadata.create_all(engine)
         self.engine = engine
         self.session = sessionmaker(bind=self.engine)
@@ -40,6 +40,8 @@ class PostgresService(BaseDBService):
             time=self.get_datetime(post["time"]),
         )
         self.db.add(new_post)
+        self.db.commit()
+        self.db.flush()
 
     @staticmethod
     def get_datetime(time_my):

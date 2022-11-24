@@ -11,6 +11,7 @@ psycopg2 = "*"
 python-dotenv = "*"
 types-psycopg2 = "*"
 sqlalchemy = "*"
+pika = "*"
 
 [dev-packages]
 black = "*"

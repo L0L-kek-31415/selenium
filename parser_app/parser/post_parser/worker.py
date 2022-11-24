@@ -4,25 +4,30 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from parser.class_names import ClassNames
 from parser.driver import DriverService
+from parser.rabbit.producer import BaseProducer
 
 
 class Worker(DriverService):
-    def __init__(self, link, queue):
+    def __init__(self, link):
         super().__init__()
         self.link = link
-        self.queue = queue
         self.action = ActionChains(self.driver)
+        self.producer = BaseProducer("syka")
         self.start()
 
     def start(self):
+        print("worker started")
         self.driver.get(self.link)
         data = self.get_data()
-        self.queue.put(data)
-        self.close_driver()
+        print(data)
+        # self.close_driver()
+        # self.queue.put(data)
 
     def get_data(self):
         title = self.get_attr(By.CLASS_NAME, ClassNames.TITLE)
         subreddit = self.get_attr(By.CLASS_NAME, ClassNames.SUBREDDIT)
+        self.producer.publish(str(subreddit))
+        self.producer.close()
         user = self.get_attr(By.CLASS_NAME, ClassNames.USER)
         comments = self.get_attr(By.CLASS_NAME, ClassNames.COMMENTS)
         upvoted = self.get_attr(By.CLASS_NAME, ClassNames.UPVOTED)
@@ -32,10 +37,10 @@ class Worker(DriverService):
             "title": title,
             "user": user,
             "subreddit": subreddit,
-            "vote": self.get_num(vote),
-            "comments": self.get_num(comments),
-            "upvoted": self.get_num(upvoted),
-            "time": time_my,
+            "vote": str(self.get_num(vote)),
+            "comments": str(self.get_num(comments)),
+            "upvoted": str(self.get_num(upvoted)),
+            "time": str(time_my),
         }
         return data
 

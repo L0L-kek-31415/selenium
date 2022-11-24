@@ -4,3 +4,6 @@
 /.mypy_cache/
 /.env.postgres
 /.env.mongodb
+/fastapi_app/.idea/
+/fastapi_app/.env.postgres
+/fastapi_app/.env.mongodb

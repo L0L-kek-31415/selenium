@@ -9,17 +9,44 @@ services:
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_NODE_MAX_SESSIONS=10
       - JAVA_OPTS=-XX:ActiveProcessorCount=10
-  web:
-    build: .
+  link:
+    build: parser_app
+    volumes:
+      - ../data:/data:rw
+    entrypoint: sh entrypoint.sh
+  post:
+    build: parser_app
+    volumes:
+      - ../data:/data:rw
+    entrypoint: sh entrypoint_post.sh
+  subreddit:
+    build: parser_app
+    volumes:
+      - ../data:/data:rw
+    entrypoint: sh entrypoint_subreddit.sh
   mongodb:
     image: mongo
     ports:
       - 27017:27017
     env_file:
-      - .env.mongodb
+      - parser_app/.env.mongodb
   postgres:
     image: postgres:13
     env_file:
-      - ./.env.postgres
+      - parser_app/.env.postgres
     ports:
       - 5433:5432
+  fastapi:
+    build: ./fastapi_app
+    entrypoint: uvicorn main:app --reload --port 1111 --host 0.0.0.0
+    ports:
+      - 1111:1111
+    volumes:
+      - ../data:/data:rw
+  rabbit:
+    image: "rabbitmq:latest"
+    restart: always
+    ports:
+      - '5672:5672'
+
+

@@ -9,3 +9,7 @@ class ClassNames:
     VOTE = "_1rZYMD_4xY3gRcSS3p8ODO"
     TIME_OBJECT = "_2VF2J19pUIMSLJFky-7PEI"
     TIME_ALL = "_2J_zB4R1FH2EjGMkQjedwc"
+    MEMBERS = "_3b9utyKN3e_kzVZ5ngPqAu"
+    RANKED = "_3b9utyKN3e_kzVZ5ngPqAu"
+    DESCRIPTION = "_1zPvgKHteTOub9dKkvrOl4"
+    CREATED = "_1d4NeAxWOiy0JPz7aXRI64"

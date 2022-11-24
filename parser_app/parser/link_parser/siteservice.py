@@ -1,48 +1,23 @@
-import multiprocessing
 import time
 from selenium.webdriver.common.by import By
 
 from parser.class_names import ClassNames
-from db.mongodb import MongoService
-from db.postgres import PostgresService
-from db.txt_db import TxtDB
 from parser.driver import DriverService
-from parser.worker import Worker
+from parser.rabbit.producer import BaseProducer
 
 
 class SiteService(DriverService):
-    def __init__(self, pages, workers, link, database):
+    def __init__(self, pages, link, database):
         super().__init__()
         self.pages = pages
-        self.workers = workers
         self.link = link
         self.database = database
-        self.queue = multiprocessing.Manager().Queue()
-        self.pool = multiprocessing.Pool(self.workers)
+        self.producer = BaseProducer("link")
 
     def start(self):
         self.driver.get(self.link)
         self.posts()
         self.close_driver()
-        self.pool.close()
-        self.pool.join()
-        self.add_data_in_db()
-
-    def add_data_in_db(self):
-        databases = {
-            "mongo": MongoService,
-            "pg": PostgresService,
-            "txt": TxtDB,
-        }
-        try:
-            database = databases[self.database]
-        except KeyError:
-            database = databases["mongo"]
-        with database() as db:
-            while self.queue.empty() is False:
-                post = self.queue.get()
-                db.add_post(post)
-            print(db.return_all())
 
     def posts(self):
         while self.pages > 0:
@@ -62,7 +37,8 @@ class SiteService(DriverService):
             link = self.get_post_link(post)
             if link:
                 self.pages -= 1
-                self.pool.apply_async(Worker, (link, self.queue))
+                body = str(link)
+                self.producer.publish(body)
 
     def get_post_link(self, post):
         link = self.get_attr(
