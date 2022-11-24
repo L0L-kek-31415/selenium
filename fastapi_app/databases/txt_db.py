@@ -19,7 +19,6 @@ class TxtDB(BaseDBService):
         self.file.seek(0)
         result = []
         for line in self.file:
-
             post = json.loads(line)
             result.append(
                 Post(
