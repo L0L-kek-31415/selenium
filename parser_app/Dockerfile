@@ -16,7 +16,9 @@ RUN pipenv install --deploy --system --ignore-pipfile
 
 COPY . .
 RUN chmod 777 /app/entrypoint.sh
+RUN chmod 777 /app/entrypoint_post.sh
+RUN chmod 777 /app/entrypoint_subreddit.sh
 
-ENTRYPOINT /app/entrypoint.sh
+
 #ENTRYPOINT python start.py
 

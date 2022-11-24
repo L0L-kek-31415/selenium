@@ -7,7 +7,6 @@ while ! nc -z 'browser' '4444'; do
 done
 
 echo "Browser started"
-
 echo "Waiting for rabbit..."
 
 while ! nc -z 'rabbit' '5672'; do
@@ -16,9 +15,8 @@ done
 
 echo "Browser rabbit"
 
-python3 start.py --workers 6 --pages 2 --database mongo
-#python3 /app/parser/subreddit_parser/subreddit.py
-#python3 /app/parser/queue.py
+python3 start_subreddit.py --workers 6 --pages 2 --database mongo
+
 
 
 exec "$@"
